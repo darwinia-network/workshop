@@ -49,9 +49,9 @@ fn testnet_genesis( ... ) -> GenesisConfig {
 }
 ```
 
-### Initialize `./etc20-demo/runtime/src/lib.rs`
+### Initialize `./erc20-demo/runtime/src/lib.rs`
 
-`./etc20-demo/runtime/src/lib.rs` > init:
+`./erc20-demo/runtime/src/lib.rs` > init:
 
 ```rust
 mod erc20_demo;
@@ -59,7 +59,7 @@ mod erc20_demo;
 impl erc20_demo::Trait for Runtime {}
 ```
 
-`./etc20-demo/runtime/src/lib.rs` > `construct_runtime!`:
+`./erc20-demo/runtime/src/lib.rs` > `construct_runtime!`:
 
 ```rust
 construct_runtime!(
@@ -83,9 +83,9 @@ construct_runtime!(
 
 ---
 
-### Initialize `./etc20-demo/runtime/src/erc20_demo.rs`
+### Initialize `./erc20-demo/runtime/src/erc20_demo.rs`
 
-`./etc20-demo/runtime/src/erc20_demo.rs` > import:
+`./erc20-demo/runtime/src/erc20_demo.rs` > import:
 
 ```rust
 use parity_codec::Codec;
@@ -98,7 +98,7 @@ use support::{
 use system::ensure_signed;
 ```
 
-`./etc20-demo/runtime/src/erc20_demo.rs` > `decl_storage!` > init:
+`./erc20-demo/runtime/src/erc20_demo.rs` > `decl_storage!` > init:
 
 ```rust
 decl_storage! {
@@ -114,7 +114,7 @@ decl_storage! {
 }
 ```
 
-`./etc20-demo/runtime/src/erc20_demo.rs` > `TokenBalance`:
+`./erc20-demo/runtime/src/erc20_demo.rs` > `TokenBalance`:
 
 ```rust
 pub trait Trait: system::Trait {
@@ -131,7 +131,7 @@ pub trait Trait: system::Trait {
 
 ---
 
-`./etc20-demo/runtime/src/lib.rs` > `TokenBalance`:
+`./erc20-demo/runtime/src/lib.rs` > `TokenBalance`:
 
 ```rust
 impl erc20_demo::Trait for Runtime {
@@ -141,7 +141,7 @@ impl erc20_demo::Trait for Runtime {
 
 ---
 
-`erc20_demo.rs` > `decl_module!` > `init()`:
+`./erc20-demo/runtime/src/erc20_demo.rs` > `decl_module!` > `init()`:
 
 ```rust
 decl_module! {
@@ -166,7 +166,7 @@ decl_module! {
 
 ## Summary
 
-Now, `./etc20-demo/runtime/src/erc20_demo.rs` should look like:
+Now, `./erc20-demo/runtime/src/erc20_demo.rs` should look like:
 
 ```rust
 pub trait Trait: system::Trait {
@@ -214,9 +214,9 @@ decl_module! {
 
 ## Implement
 
-### Implement **transter**
+### Implement `transfer()`
 
-`./etc20-demo/runtime/src/erc20_demo.rs` > `decl_module!` > `transfer()`:
+`./erc20-demo/runtime/src/erc20_demo.rs` > `decl_module!` > `transfer()`:
 
 ```rust
 decl_module! {
@@ -239,7 +239,7 @@ decl_module! {
 }
 ```
 
-`./etc20-demo/runtime/src/erc20_demo.rs` > `impl module` > `int_transfer()`:
+`./erc20-demo/runtime/src/erc20_demo.rs` > `impl module` > `int_transfer()`:
 
 ```rust
 impl<T: Trait> Module<T> {
@@ -276,9 +276,9 @@ impl<T: Trait> Module<T> {
 }
 ```
 
-### Implement **approve**
+### Implement `approve()`
 
-`./etc20-demo/runtime/src/erc20_demo.rs` > `decl_module!` > `approve()`:
+`./erc20-demo/runtime/src/erc20_demo.rs` > `decl_module!` > `approve()`:
 
 ```rust
 decl_module! {
@@ -313,9 +313,9 @@ decl_module! {
 }
 ```
 
-### Implement **transfer_from**
+### Implement `transfer_from()`
 
-`./etc20-demo/runtime/src/erc20_demo.rs` > `decl_module!` > `tramsfer_from()`:
+`./erc20-demo/runtime/src/erc20_demo.rs` > `decl_module!` > `tramsfer_from()`:
 
 ```rust
 decl_module! {
@@ -355,7 +355,7 @@ decl_module! {
 
 ## Summary
 
-Now, `./etc20-demo/runtime/src/erc20_demo.rs` should look like:
+Now, `./erc20-demo/runtime/src/erc20_demo.rs` should look like:
 
 ```rust
 pub trait Trait: system::Trait {
@@ -487,7 +487,7 @@ decl_module! {
 
 ## Deposit event
 
-`./etc20-demo/runtime/src/erc20_demo.rs` > `Event`:
+`./erc20-demo/runtime/src/erc20_demo.rs` > `Event`:
 
 ```rust
 pub trait Trait: system::Trait {
@@ -496,7 +496,7 @@ pub trait Trait: system::Trait {
 }
 ```
 
-`./etc20-demo/runtime/src/erc20_demo.rs` > `impl module` > `int_transfer()`:
+`./erc20-demo/runtime/src/erc20_demo.rs` > `impl module` > `int_transfer()`:
 
 ```rust
 impl<T: Trait> Module<T> {
@@ -510,7 +510,7 @@ impl<T: Trait> Module<T> {
 }
 ```
 
-`./etc20-demo/runtime/src/erc20_demo.rs` > `decl_module!`:
+`./erc20-demo/runtime/src/erc20_demo.rs` > `decl_module!`:
 
 ```rust
 decl_module! {
@@ -543,7 +543,7 @@ decl_module! {
 }
 ```
 
-`./etc20-demo/runtime/src/erc20_demo.rs` > `decl_event!`:
+`./erc20-demo/runtime/src/erc20_demo.rs` > `decl_event!`:
 
 ```rust
 decl_event! {
@@ -558,11 +558,11 @@ decl_event! {
 }
 ```
 
-`./etc20-demo/runtime/src/lib.rs` > `Event`:
+`./erc20-demo/runtime/src/lib.rs` > `Event`:
 
 ```rust
 impl erc20_demo::Trait for Runtime {
-    type TokenBalance ...
+    type TokenBalance ... ;
     type Evnet = Event;
 }
 ```
@@ -706,7 +706,7 @@ fn testnet_genesis(
 }
 ```
 
-`./etc20-demo/runtime/src/lib.rs` should look like:
+`./erc20-demo/runtime/src/lib.rs` should look like:
 
 ```rust
 //! The Substrate Node Template runtime. This can be compiled with `#[no_std]`, ready for Wasm.
@@ -1016,7 +1016,7 @@ impl_runtime_apis! {
 }
 ```
 
-`./etc20-demo/runtime/src/erc20_demo.rs` should look like:
+`./erc20-demo/runtime/src/erc20_demo.rs` should look like:
 
 ```rust
 use parity_codec::Codec;
