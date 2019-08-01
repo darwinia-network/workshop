@@ -1,9 +1,11 @@
 ## Setup
 
+### Auto
 ```sh
 curl https://getsubstrate.io -sSf | bash -s -- --fast
 ```
 
+### Manual (recommend)
 ```sh
 curl https://sh.rustup.rs -sSf | sh
 
@@ -13,6 +15,7 @@ rustup default nightly-2019-07-14
 rustup target add wasm-32-unknown-unknown
 cargo install --git https://github.com/alexcrichton/wasm-gc
 
+brew intsall cmake git openssl pkg-config llvm
 nix-env -i cmake git openssl pkg-config llvm
 # optional
 nix-env -i nodejs yarn
@@ -20,7 +23,7 @@ nix-env -i nodejs yarn
 
 ```sh
 substrate-node-new erc20-demo itering
-cd erc20
+cd erc20-demo
 ./target/release/erc20-demo --dev
 
 # optional
@@ -31,35 +34,80 @@ yarn run dev
 
 ## Initialize
 
-### Initialize `./erc20-demo/src/chain_spec.rs`
+go to `erc20-demo` folder:
 
-`./erc20-demo/src/chain_spec.rs` > `testnet_genesis( ... )`:
+```sh
+touch runtime/src/erc20_demo.rs
+```
+
+---
+
+`runtime/src/lib.rs` > `#![cfg_attr]` > `mod`:
 
 ```rust
-fn testnet_genesis( ... ) -> GenesisConfig {
-    GenesisConfig {
-        ... ,
-        erc20_demo: Some(Erc20DemoConfig {
-            owner: account_key("Alice"),
-            total_supply: 21000000,
-            name: "SubstrateDemoToken".as_bytes().into(),
-            ticker: "SDT".as_bytes().into() 
-        }),
+// del `#![cfg_attr(not(feature = "std"), feature(alloc))]`
+// the feature `alloc` has been stable since 1.36.0 and no longer requires an attribute to enable
+
+// replace `mod template;`
+mod erc20_demo;
+```
+
+---
+
+`runtime/src/erc20_demo.rs` > import > `Trait`:
+
+```rust
+use parity_codec::Codec;
+use rstd::prelude::*;
+use runtime_primitives::traits::{As, CheckedAdd, CheckedSub, Member, SimpleArithmetic};
+use support::{
+    decl_event, decl_module, decl_storage, dispatch::Result, ensure, Parameter, StorageMap,
+    StorageValue,
+};
+use system::ensure_signed;
+
+pub trait Trait: system::Trait {
+    type TokenBalance: Parameter
+        + Member
+        + SimpleArithmetic
+        + Codec
+        + Default
+        + Copy
+        + As<usize>
+        + As<u64>;
+}
+```
+
+---
+
+`runtime/src/lib.rs` > `erc20_demo::Trait` > `decl_storage!`:
+
+```rust
+impl erc20_demo::Trait for Runtime {
+    type TokenBalance = u128;
+}
+
+decl_storage! {
+    trait Store for Module<T: Trait> as Erc20Demo {
+        Init get(is_init): bool;
+        Owner get(owner) config(): T::AccountId;
+        TotalSupply get(total_supply) config(): T::TokenBalance;
+        Name get(name) config(): Vec<u8>;
+        Ticker get(ticker) config(): Vec<u8>;
+        BalanceOf get(balance_of): map T::AccountId => T::TokenBalance;
+        Allowance get(allowance): map (T::AccountId, T::AccountId) => T::TokenBalance;
     }
 }
 ```
 
-### Initialize `./etc20-demo/runtime/src/lib.rs`
+Refs:
+- `GenesisConfig` -> [link](https://substrate.dev/docs/en/runtime/types/genesisconfig-struct)
+- `StorageMap` -> [link](https://substrate.dev/rustdocs/v1.0/srml_support/storage/trait.StorageMap.html)
+- `StorageValue` -> [link](https://substrate.dev/rustdocs/v1.0/srml_support/storage/trait.StorageValue.html)
 
-`./etc20-demo/runtime/src/lib.rs` > init:
+---
 
-```rust
-mod erc20_demo;
-
-impl erc20_demo::Trait for Runtime {}
-```
-
-`./etc20-demo/runtime/src/lib.rs` > `construct_runtime!`:
+`runtime/src/lib.rs` > `construct_runtime!`:
 
 ```rust
 construct_runtime!(
@@ -81,67 +129,41 @@ construct_runtime!(
 );
 ```
 
+Refs:
+- `construct_runtime!` -> [link](https://substrate.dev/docs/en/runtime/macros/construct_runtime)
+- `Call` -> [link](https://substrate.dev/docs/en/runtime/types/call-enum)
+- `Event` -> [link](https://substrate.dev/docs/en/runtime/types/event-enum)
+
 ---
 
-### Initialize `./etc20-demo/runtime/src/erc20_demo.rs`
-
-`./etc20-demo/runtime/src/erc20_demo.rs` > import:
+`src/chain_spec.rs` > import > `testnet_genesis( ... )`:
 
 ```rust
-use parity_codec::Codec;
-use rstd::prelude::*;
-use runtime_primitives::traits::{As, CheckedAdd, CheckedSub, Member, SimpleArithmetic};
-use support::{
-    decl_event, decl_module, decl_storage, dispatch::Result, ensure, Parameter, StorageMap,
-    StorageValue,
+use erc20_demo_runtime::{ 
+    ... ,
+    Erc20DemoConfig
 };
-use system::ensure_signed;
-```
 
-`./etc20-demo/runtime/src/erc20_demo.rs` > `decl_storage!` > init:
-
-```rust
-decl_storage! {
-    trait Store for Module<T: Trait> as Erc20Demo {
-        Init get(is_init): bool;
-        Owner get(owner) config(): T::AccountId;
-        TotalSupply get(total_supply) config(): T::TokenBalance;
-        Name get(name) config(): Vec<u8>;
-        Ticker get(ticker) config(): Vec<u8>;
-        BalanceOf get(balance_of): map T::AccountId => T::TokenBalance;
-        Allowance get(allowance): map(T::AccountId, T::AccountId) => T::TokenBalance;
+fn testnet_genesis( ... ) -> GenesisConfig {
+    GenesisConfig {
+        ... ,
+        erc20_demo: Some(Erc20DemoConfig {
+            owner: account_key("Alice"),
+            total_supply: 21000000,
+            name: "SubstrateDemoToken".as_bytes().into(),
+            ticker: "SDT".as_bytes().into() 
+        }),
     }
 }
 ```
 
-`./etc20-demo/runtime/src/erc20_demo.rs` > `TokenBalance`:
-
-```rust
-pub trait Trait: system::Trait {
-    type TokenBalance: Parameter
-        + Member
-        + SimpleArithmetic
-        + Codec
-        + Default
-        + Copy
-        + As<usize>
-        + As<u64>;
-}
-```
+Refs:
+- `account_key()` -> `src/chain_spec.rs` line 33
+- `sr25519::Pair` -> [link](https://substrate.dev/rustdocs/v1.0/sr_io/sr25519/struct.Pair.html)
 
 ---
 
-`./etc20-demo/runtime/src/lib.rs` > `TokenBalance`:
-
-```rust
-impl erc20_demo::Trait for Runtime {
-    type TokenBalance = u128;
-}
-```
-
----
-
-`erc20_demo.rs` > `decl_module!` > `init()`:
+`runtime/src/erc20_demo.rs` > `decl_module!` > `init()`:
 
 ```rust
 decl_module! {
@@ -166,9 +188,18 @@ decl_module! {
 
 ## Summary
 
-Now, `./etc20-demo/runtime/src/erc20_demo.rs` should look like:
+Now, `runtime/src/erc20_demo.rs` should look like:
 
 ```rust
+use parity_codec::Codec;
+use rstd::prelude::*;
+use runtime_primitives::traits::{As, CheckedAdd, CheckedSub, Member, SimpleArithmetic};
+use support::{
+    decl_event, decl_module, decl_storage, dispatch::Result, ensure, Parameter, StorageMap,
+    StorageValue,
+};
+use system::ensure_signed;
+
 pub trait Trait: system::Trait {
     type TokenBalance: Parameter
         + Member
@@ -188,7 +219,7 @@ decl_storage! {
         Name get(name) config(): Vec<u8>;
         Ticker get(ticker) config(): Vec<u8>;
         BalanceOf get(balance_of): map T::AccountId => T::TokenBalance;
-        Allowance get(allowance): map(T::AccountId, T::AccountId) => T::TokenBalance;
+        Allowance get(allowance): map (T::AccountId, T::AccountId) => T::TokenBalance;
     }
 }
 
@@ -214,9 +245,7 @@ decl_module! {
 
 ## Implement
 
-### Implement **transter**
-
-`./etc20-demo/runtime/src/erc20_demo.rs` > `decl_module!` > `transfer()`:
+`runtime/src/erc20_demo.rs` > `decl_module!` > `transfer()`:
 
 ```rust
 decl_module! {
@@ -239,7 +268,9 @@ decl_module! {
 }
 ```
 
-`./etc20-demo/runtime/src/erc20_demo.rs` > `impl module` > `int_transfer()`:
+---
+
+`runtime/src/erc20_demo.rs` > `impl module` > `int_transfer()`:
 
 ```rust
 impl<T: Trait> Module<T> {
@@ -256,15 +287,15 @@ impl<T: Trait> Module<T> {
 
         let sender_balance = {
             let sender_balance = Self::balance_of(from.clone());
-
             ensure!(sender_balance >= value, "Not enough balance.");
 
-            sender_balance.checked_sub(&value).ok_or("overflow in calculating balance")?
+            sender_balance
+                .checked_sub(&value)
+                .ok_or("overflow in calculating balance")?
         };
-        let receiver_balance = {
-            let receiver_balance = Self::balance_of(to.clone());
-            receiver_balance.checked_add(&value).ok_or("overflow in calculating balance")?
-        };
+        let receiver_balance = Self::balance_of(to.clone())
+            .checked_add(&value)
+            .ok_or("overflow in calculating balance")?;
 
         <BalanceOf<T>>::insert(from.clone(), sender_balance);
         <BalanceOf<T>>::insert(to.clone(), receiver_balance);
@@ -276,9 +307,9 @@ impl<T: Trait> Module<T> {
 }
 ```
 
-### Implement **approve**
+---
 
-`./etc20-demo/runtime/src/erc20_demo.rs` > `decl_module!` > `approve()`:
+`runtime/src/erc20_demo.rs` > `decl_module!` > `approve()` > `transfer_from()`:
 
 ```rust
 decl_module! {
@@ -309,25 +340,6 @@ decl_module! {
 
             Ok(())
         }
-    }
-}
-```
-
-### Implement **transfer_from**
-
-`./etc20-demo/runtime/src/erc20_demo.rs` > `decl_module!` > `tramsfer_from()`:
-
-```rust
-decl_module! {
-    pub struct Module<T: Trait> for enum Call
-        where
-            origin: T::Origin
-    {
-        fn init( ... ) -> Result { ... }
-
-        fn transfer( ... ) -> Result { ... }
-
-        fn approve( ... ) -> Result { ... }
 
         fn transfer_from(
             origin, 
@@ -355,9 +367,18 @@ decl_module! {
 
 ## Summary
 
-Now, `./etc20-demo/runtime/src/erc20_demo.rs` should look like:
+Now, `runtime/src/erc20_demo.rs` should look like:
 
 ```rust
+use parity_codec::Codec;
+use rstd::prelude::*;
+use runtime_primitives::traits::{As, CheckedAdd, CheckedSub, Member, SimpleArithmetic};
+use support::{
+    decl_event, decl_module, decl_storage, dispatch::Result, ensure, Parameter, StorageMap,
+    StorageValue,
+};
+use system::ensure_signed;
+
 pub trait Trait: system::Trait {
     type TokenBalance: Parameter
         + Member
@@ -377,7 +398,7 @@ decl_storage! {
         Name get(name) config(): Vec<u8>;
         Ticker get(ticker) config(): Vec<u8>;
         BalanceOf get(balance_of): map T::AccountId => T::TokenBalance;
-        Allowance get(allowance): map(T::AccountId, T::AccountId) => T::TokenBalance;
+        Allowance get(allowance): map (T::AccountId, T::AccountId) => T::TokenBalance;
     }
 }
 
@@ -395,15 +416,15 @@ impl<T: Trait> Module<T> {
 
         let sender_balance = {
             let sender_balance = Self::balance_of(from.clone());
-
             ensure!(sender_balance >= value, "Not enough balance.");
 
-            sender_balance.checked_sub(&value).ok_or("overflow in calculating balance")?
+            sender_balance
+                .checked_sub(&value)
+                .ok_or("overflow in calculating balance")?
         };
-        let receiver_balance = {
-            let receiver_balance = Self::balance_of(to.clone());
-            receiver_balance.checked_add(&value).ok_or("overflow in calculating balance")?
-        };
+        let receiver_balance = Self::balance_of(to.clone())
+            .checked_add(&value)
+            .ok_or("overflow in calculating balance")?;
 
         <BalanceOf<T>>::insert(from.clone(), sender_balance);
         <BalanceOf<T>>::insert(to.clone(), receiver_balance);
@@ -487,7 +508,7 @@ decl_module! {
 
 ## Deposit event
 
-`./etc20-demo/runtime/src/erc20_demo.rs` > `Event`:
+`runtime/src/erc20_demo.rs` > `Event`:
 
 ```rust
 pub trait Trait: system::Trait {
@@ -496,7 +517,20 @@ pub trait Trait: system::Trait {
 }
 ```
 
-`./etc20-demo/runtime/src/erc20_demo.rs` > `impl module` > `int_transfer()`:
+---
+
+`runtime/src/lib.rs` > `Event`:
+
+```rust
+impl erc20_demo::Trait for Runtime {
+    type TokenBalance ... ;
+    type Event = Event;
+}
+```
+
+---
+
+`runtime/src/erc20_demo.rs` > `impl module` > `int_transfer()`:
 
 ```rust
 impl<T: Trait> Module<T> {
@@ -510,7 +544,9 @@ impl<T: Trait> Module<T> {
 }
 ```
 
-`./etc20-demo/runtime/src/erc20_demo.rs` > `decl_module!`:
+---
+
+`runtime/src/erc20_demo.rs` > `decl_module!` > `deposit_event()` > `approve()` > `transfer_from()`:
 
 ```rust
 decl_module! {
@@ -543,7 +579,9 @@ decl_module! {
 }
 ```
 
-`./etc20-demo/runtime/src/erc20_demo.rs` > `decl_event!`:
+---
+
+`runtime/src/erc20_demo.rs` > `decl_event!`:
 
 ```rust
 decl_event! {
@@ -558,20 +596,11 @@ decl_event! {
 }
 ```
 
-`./etc20-demo/runtime/src/lib.rs` > `Event`:
-
-```rust
-impl erc20_demo::Trait for Runtime {
-    type TokenBalance ...
-    type Evnet = Event;
-}
-```
-
 ## Summary
 
 Now,
 
-`./erc20-demo/src/chain_spec.rs` should look like:
+`src/chain_spec.rs` should look like:
 
 ```rust
 use erc20_demo_runtime::{
@@ -706,7 +735,9 @@ fn testnet_genesis(
 }
 ```
 
-`./etc20-demo/runtime/src/lib.rs` should look like:
+---
+
+`runtime/src/lib.rs` should look like:
 
 ```rust
 //! The Substrate Node Template runtime. This can be compiled with `#[no_std]`, ready for Wasm.
@@ -1016,7 +1047,9 @@ impl_runtime_apis! {
 }
 ```
 
-`./etc20-demo/runtime/src/erc20_demo.rs` should look like:
+---
+
+`runtime/src/erc20_demo.rs` should look like:
 
 ```rust
 use parity_codec::Codec;
@@ -1048,34 +1081,38 @@ decl_storage! {
         Name get(name) config(): Vec<u8>;
         Ticker get(ticker) config(): Vec<u8>;
         BalanceOf get(balance_of): map T::AccountId => T::TokenBalance;
-        Allowance get(allowance): map(T::AccountId, T::AccountId) => T::TokenBalance;
+        Allowance get(allowance): map (T::AccountId, T::AccountId) => T::TokenBalance;
     }
 }
 
 impl<T: Trait> Module<T> {
-    fn int_transfer(from: T::AccountId, to: T::AccountId, value: T::TokenBalance) -> Result {
+    fn int_transfer(
+        from: T::AccountId, 
+        to: T::AccountId, 
+        value: T::TokenBalance
+    ) -> Result 
+    {
         ensure!(
             <BalanceOf<T>>::exists(from.clone()),
             "Account does not own this token."
         );
 
-        let sender_balance = {
-            let sender_balance = Self::balance_of(from.clone());
-            ensure!(sender_balance >= value, "Not enough balance.");
+        {
+            let sender_balance = {
+                let sender_balance = Self::balance_of(from.clone());
+                ensure!(sender_balance >= value, "Not enough balance.");
 
-            sender_balance
-                .checked_sub(&value)
-                .ok_or("overflow in calculating balance")?
-        };
-        let receiver_balance = {
-            let receiver_balance = Self::balance_of(to.clone());
-            receiver_balance
+                sender_balance
+                    .checked_sub(&value)
+                    .ok_or("overflow in calculating balance")?
+            };
+            let receiver_balance = Self::balance_of(to.clone())
                 .checked_add(&value)
-                .ok_or("overflow in calculating balance")?
-        };
+                .ok_or("overflow in calculating balance")?;
 
-        <BalanceOf<T>>::insert(from.clone(), sender_balance);
-        <BalanceOf<T>>::insert(to.clone(), receiver_balance);
+            <BalanceOf<T>>::insert(from.clone(), sender_balance);
+            <BalanceOf<T>>::insert(to.clone(), receiver_balance);
+        }
 
         Self::deposit_event(RawEvent::Transfer(from, to, value));
 
@@ -1121,10 +1158,12 @@ decl_module! {
             let sender = ensure_signed(origin)?;
             ensure!(<BalanceOf<T>>::exists(&sender), "Account does not own this token.");
 
-            let allowance = Self::allowance((sender.clone(), spender.clone()));
-            let updated_allowance = allowance.checked_add(&value).ok_or("overflow in calculating allowance")?;
+            {
+                let allowance = Self::allowance((sender.clone(), spender.clone()));
+                let updated_allowance = allowance.checked_add(&value).ok_or("overflow in calculating allowance")?;
 
-            <Allowance<T>>::insert((sender.clone(), spender.clone()), updated_allowance);
+                <Allowance<T>>::insert((sender.clone(), spender.clone()), updated_allowance);
+            }
 
             Self::deposit_event(RawEvent::Approval(sender, spender, value));
 
@@ -1138,16 +1177,20 @@ decl_module! {
             #[compact] value: T::TokenBalance
         ) -> Result
         {
-            ensure!(<Allowance<T>>::exists((from.clone(), to.clone())), "Allowance does not exist.");
+            let sender = ensure_signed(origin)?;
+            ensure!(<Allowance<T>>::exists((from.clone(), sender.clone())), "Allowance does not exist.");
 
-            let allowance = Self::allowance((from.clone(), to.clone()));
+            let allowance = Self::allowance((from.clone(), sender.clone()));
             ensure!(allowance >= value, "Not enough allowance.");
 
-            let updated_allowance = allowance.checked_sub(&value).ok_or("overflow in calculating allowance")?;
+            {
+                let updated_allowance = allowance - value;
+                // let updated_allowance = allowance.checked_sub(&value).ok_or("overflow in calculating allowance")?;
 
-            <Allowance<T>>::insert((from.clone(), to.clone()), updated_allowance);
+                <Allowance<T>>::insert((from.clone(), sender.clone()), updated_allowance);
+            }
 
-            Self::deposit_event(RawEvent::Approval(from.clone(), to.clone(), value));
+            // Self::deposit_event(RawEvent::Approval(from.clone(), sender.clone(), value));
 
             Self::int_transfer(from, to, value)
         }
