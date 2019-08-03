@@ -1,0 +1,3 @@
+[submodule "2019-08-03/extending-substrate-runtime-modules/testchain"]
+	path = 2019-08-03/extending-substrate-runtime-modules/testchain
+	url = https://github.com/wuminzhe/testchain
