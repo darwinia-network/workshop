@@ -1,8 +1,0 @@
-.DS_Store
-.idea
-*.iml
-__pycache__/
-
-target/
-**/*.rs.bk
-Cargo.lock

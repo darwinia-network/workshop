@@ -13,10 +13,10 @@ curl https://getsubstrate.io -sSf | bash -s -- --fast
 # 如果系统中没有 rust
 curl https://sh.rustup.rs -sSf | sh
 > 2
-> PRESS Enter
+>
 > nightly-2019-07-14
-> PRESS Enter
-> PRESS Enter
+>
+>
 source $HOME/.cargo/env
 # 如果已经安装 rust
 rustup default nightly-2019-07-14

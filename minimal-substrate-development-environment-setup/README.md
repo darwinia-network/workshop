@@ -1,11 +1,13 @@
-## Minimal substrate env setup
+## Minimal substrate development environment setup
 
-A minimal substrate env setup, without `substrate` and `subkey`.
+A minimal substrate development environment setup, without `substrate` and `subkey`.
 
 ### List:
 - rust:
     - toolchain: nightly-2019-07-14
     - target: wasm32-unknown-unknown
+    - wasm-gc
+    - wasm-prune
 - build dependency:
     - cmake 
     - git 
@@ -17,9 +19,7 @@ A minimal substrate env setup, without `substrate` and `subkey`.
     - substrate-module-new
     - substrate-node-new
     - substrate-ui-new
-    - wasm-gc
-    - wasm-prune
 
 ### Language:
-- [Chinese](zh_cn.md)
-- [English](en_us.md) 
+- [English](en_us.md)
+- [简体中文](zh_cn.md) 

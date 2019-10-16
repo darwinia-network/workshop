@@ -13,10 +13,10 @@ curl https://getsubstrate.io -sSf | bash -s -- --fast
 # if rust not in your system
 curl https://sh.rustup.rs -sSf | sh
 > 2
-> PRESS Enter
+>
 > nightly-2019-07-14
-> PRESS Enter
-> PRESS Enter
+>
+>
 source $HOME/.cargo/env
 # if rust is already installed
 rustup default nightly-2019-07-14
