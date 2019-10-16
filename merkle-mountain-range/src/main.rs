@@ -42,10 +42,8 @@ impl MMR {
 			let left = self.next_index - (2 << height);
 			let right = left + sibling_offset(height);
 
-			self.hashes.push(chain_hash(
-				&self.hashes[left as usize],
-				&self.hashes[right as usize],
-			));
+			self.hashes
+				.push(chain_hash(&self.hashes[left as usize], &self.hashes[right as usize]));
 			height += 1;
 		}
 		self.next_index += 1;
@@ -54,8 +52,7 @@ impl MMR {
 	}
 
 	pub fn root_hash(&self) -> Vec<u8> {
-		self.bagging_peaks(None, peak_indexes(self.next_index))
-			.unwrap()
+		self.bagging_peaks(None, peak_indexes(self.next_index)).unwrap()
 	}
 
 	pub fn to_proof_at_index(&self, mut index: u32) -> Self {
@@ -98,8 +95,8 @@ impl MMR {
 			if let Some(hash) = self.bagging_peaks(Some(peak_index), &peak_indexes) {
 				hashes.push(hash);
 			}
-			for peak in self.left_peaks(peak_index, &peak_indexes).iter().rev() {
-				hashes.push(peak.to_owned());
+			for peak in self.left_peaks(peak_index, &peak_indexes).into_iter().rev() {
+				hashes.push(peak);
 			}
 		}
 
@@ -146,11 +143,7 @@ impl MMR {
 		self.root_hash() == proof_hash
 	}
 
-	fn bagging_peaks<A: AsRef<[u32]>>(
-		&self,
-		peak_index: Option<u32>,
-		peak_indexes: A,
-	) -> Option<Vec<u8>> {
+	fn bagging_peaks<A: AsRef<[u32]>>(&self, peak_index: Option<u32>, peak_indexes: A) -> Option<Vec<u8>> {
 		let peak_indexes = peak_indexes.as_ref();
 		let mut peak_hashes: Vec<_> = if let Some(peak_index) = peak_index {
 			peak_indexes
@@ -199,12 +192,7 @@ impl MMR {
 
 impl fmt::Display for MMR {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		write!(
-			f,
-			"{}: {}\n",
-			"next_index".cyan(),
-			self.next_index.to_string().yellow()
-		)?;
+		write!(f, "{}: {}\n", "next_index".cyan(), self.next_index.to_string().yellow())?;
 		for (i, hash) in self.hashes.iter().enumerate() {
 			write!(
 				f,
@@ -250,11 +238,7 @@ fn hash(data: &[u8]) -> GenericArray<u8, <Blake2b as Digest>::OutputSize> {
 }
 
 fn chain_hash<A: AsRef<[u8]>>(a: A, b: A) -> Vec<u8> {
-	Blake2b::new()
-		.chain(a.as_ref())
-		.chain(b.as_ref())
-		.result()
-		.to_vec()
+	Blake2b::new().chain(a.as_ref()).chain(b.as_ref()).result().to_vec()
 }
 
 fn node_height(mut index: u32) -> u32 {
@@ -363,10 +347,7 @@ fn t3() {
 	}
 
 	assert_eq!(
-		chain_hash(
-			&chain_hash(&mmr.hashes[18], &mmr.hashes[17]),
-			&mmr.hashes[14]
-		),
+		chain_hash(&chain_hash(&mmr.hashes[18], &mmr.hashes[17]), &mmr.hashes[14]),
 		mmr.root_hash()
 	);
 }
