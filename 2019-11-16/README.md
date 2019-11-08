@@ -20,7 +20,7 @@ cd <your path>/workshop/2019-11-16/substratekitties
 cargo build --release
 #启动节点
 ./target/release/substratekitties --dev
-#如果此次行为属于对链进行修改后的更新，可先清空
+#如果此次行为属于对链进行修改后的更新，可先清空在启动
 ./target/release/substratekitties purge-chain --dev
 ```
 
