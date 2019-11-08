@@ -1,47 +1,47 @@
-# Ê¹ÓÃRustºÍSubstrate¿ª·¢¼òµ¥µÄ¼ÓÃÜÃ¨ÓÎÏ·
+# ä½¿ç”¨Rustå’ŒSubstrateå¼€å‘ç®€å•çš„åŠ å¯†çŒ«æ¸¸æˆ
 
-## Substrate»·¾³²¿Êğ
-### °²×°²½Öè
-²Î¿¼[Minimal substrate development environment setup](https://github.com/darwinia-network/workshop/blob/master/minimal-substrate-development-environment-setup/README.md)
+## Substrateç¯å¢ƒéƒ¨ç½²
+### å®‰è£…æ­¥éª¤
+å‚è€ƒ[Minimal substrate development environment setup](https://github.com/darwinia-network/workshop/blob/master/minimal-substrate-development-environment-setup/README.md)
 
-## ÏÂÔØÒÑÍê³ÉµÄ¼ÓÃÜÃ¨ºÏÔ¼´úÂë
+## ä¸‹è½½å·²å®Œæˆçš„åŠ å¯†çŒ«åˆçº¦ä»£ç 
 ```sh
 git clone https://github.com/darwinia-network/workshop.git
 ```
 
-## ±àÒëÔËĞĞ
+## ç¼–è¯‘è¿è¡Œ
 ```sh
-´ò¿ªÏÂÔØºÃµÄ½Úµã´úÂë
+#æ‰“å¼€ä¸‹è½½å¥½çš„èŠ‚ç‚¹ä»£ç 
 cd <your path>/workshop/2019-11-16/substratekitties
-#±àÒë³ÉWasmÎÄ¼ş
-#Èç¹ûÊÇµÚÒ»´ÎÊ¹ÓÃ½Úµã£¬ÒªÏÈÖ´ĞĞ./scripts/init.sh
+#ç¼–è¯‘æˆWasmæ–‡ä»¶
+#å¦‚æœæ˜¯ç¬¬ä¸€æ¬¡ä½¿ç”¨èŠ‚ç‚¹ï¼Œè¦å…ˆæ‰§è¡Œ./scripts/init.sh
 ./scripts/build.sh
-#±àÒë³É¶ş½øÖÆÎÄ¼ş
+#ç¼–è¯‘æˆäºŒè¿›åˆ¶æ–‡ä»¶
 cargo build --release
-#Æô¶¯½Úµã
+#å¯åŠ¨èŠ‚ç‚¹
 ./target/release/substratekitties --dev
-#Èç¹û´Ë´ÎĞĞÎªÊôÓÚ¶ÔÁ´½øĞĞĞŞ¸ÄºóµÄ¸üĞÂ£¬¿ÉÏÈÇå¿Õ
+#å¦‚æœæ­¤æ¬¡è¡Œä¸ºå±äºå¯¹é“¾è¿›è¡Œä¿®æ”¹åçš„æ›´æ–°ï¼Œå¯å…ˆæ¸…ç©º
 ./target/release/substratekitties purge-chain --dev
 ```
 
-## ²é¿´
-·ÃÎÊhttps://polkadot.js.org/apps/#/explorer
+## æŸ¥çœ‹
+è®¿é—®https://polkadot.js.org/apps/#/explorer
 
 Settings -> remote node/endpoint to connect to -> Locol Host
 ![example](https://github.com/Eanam/workshop/blob/master/2019-11-16/pics/Setting.png?raw=true)
 
-## Á´µÄÉı¼¶
-Çø±ğÓÚÉÏÒ»ÖÖ¶ÔÁ´ÏÈÇå¿ÕÔÚ¸üĞÂµÄ·½·¨£¬SubstrateÌá¹©ÁËÒ»ÖÖ¸ü¼òµ¥µÄÉı¼¶µÄ·½·¨£¬¿ÉÒÔÔÚÁ´Æô¶¯ºó½øĞĞÎŞ·Ö²æµÄÊµÊ±Á´Éı¼¶
+## é“¾çš„å‡çº§
+åŒºåˆ«äºä¸Šä¸€ç§å¯¹é“¾å…ˆæ¸…ç©ºåœ¨æ›´æ–°çš„æ–¹æ³•ï¼ŒSubstrateæä¾›äº†ä¸€ç§æ›´ç®€å•çš„å‡çº§çš„æ–¹æ³•ï¼Œå¯ä»¥åœ¨é“¾å¯åŠ¨åè¿›è¡Œæ— åˆ†å‰çš„å®æ—¶é“¾å‡çº§
 ```sh
-#±àÒë³ÉWasm RuntimeÎÄ¼ş
+#ç¼–è¯‘æˆWasm Runtimeæ–‡ä»¶
 ./scripts/build.sh
-#·ÃÎÊ<your path>/substratekitties/runtime/wasm/target/wasm32-unknown-unknown/release/
-#¿É¹Û²ìµ½Ò»¸öĞÂµÄcompact Wasm Binary
+#è®¿é—®<your path>/substratekitties/runtime/wasm/target/wasm32-unknown-unknown/release/
+#å¯è§‚å¯Ÿåˆ°ä¸€ä¸ªæ–°çš„compact Wasm Binary
 ```
-½«¸ÃWasmÎÄ¼şÍÏ×§µ½ÈçÏÂ½çÃæÖ¸¶¨Î»ÖÃºó½øĞĞÌá½»£¬Ë¢ĞÂºóÔò¿ÉÒÔ¹Û²ìµ½¸üĞÂµÄÄÚÈİ£º
+å°†è¯¥Wasmæ–‡ä»¶æ‹–æ‹½åˆ°å¦‚ä¸‹ç•Œé¢æŒ‡å®šä½ç½®åè¿›è¡Œæäº¤ï¼Œåˆ·æ–°ååˆ™å¯ä»¥è§‚å¯Ÿåˆ°æ›´æ–°çš„å†…å®¹ï¼š
 ![update](https://raw.githubusercontent.com/Eanam/workshop/master/2019-11-16/pics/Update.png)
 
-:heavy_exclamation_mark: µ÷ÓÃÒªÓµÓĞsudoµÄÈ¨ÏŞ£¬¿ÉÔÚSudo -> Set sudo keyÏÂ²é¿´
+:heavy_exclamation_mark: è°ƒç”¨è¦æ‹¥æœ‰sudoçš„æƒé™ï¼Œå¯åœ¨Sudo -> Set sudo keyä¸‹æŸ¥çœ‹
 
 
 
