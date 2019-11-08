@@ -57,7 +57,6 @@ pub type Nonce = u64;
 
 //加入新模块第一步：引入 ---eanam
 mod substratekitties;
-mod testmodelue;
 
 /// Used for the module template in `./template.rs`
 mod template;
@@ -208,9 +207,6 @@ impl substratekitties::Trait for Runtime{
 	type Event = Event;
 }
 
-impl testmodelue::Trait for Runtime {
-	// add code here
-}
 
 
 construct_runtime!(
@@ -232,8 +228,6 @@ construct_runtime!(
 		
 		//引入新模块第三步（总共三步）---eanam
 		Substratekitties: substratekitties::{Module,Call,Storage,Event<T>},
-
-		Testmodelue : testmodelue::{Module,Call,Storage},
 
 	}
 );
