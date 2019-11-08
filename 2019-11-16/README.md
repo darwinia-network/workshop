@@ -66,7 +66,7 @@ Settings -> remote node/endpoint to connect to -> Locol Host
 #可观察到一个新的compact Wasm Binary
 ```
 将该Wasm文件拖拽到如下界面指定位置后进行提交，刷新后则可以观察到更新的内容：
-
+![update](https://raw.githubusercontent.com/Eanam/workshop/master/2019-11-16/pics/Update.png)
 
 :heavy_exclamation_mark: 调用要拥有sudo的权限，可在Sudo -> Set sudo key下查看
 
