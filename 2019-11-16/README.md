@@ -4,42 +4,15 @@
 ### 安装步骤
 参考[Minimal substrate development environment setup](https://github.com/darwinia-network/workshop/blob/master/minimal-substrate-development-environment-setup/README.md)
 
-## 创建Substrate节点
-将工程名暂定为substratekitties
-```sh
- #使用脚本文件创建待runtime的模板节点
- substrate-node-new substratekitties <your name>
- cd substratekitties
-```
 ## 下载已完成的加密猫合约代码
 ```sh
 git clone https://github.com/darwinia-network/workshop.git
-#将下载仓库中的substratekitties.rs赋值复制到新节点的runtime/src下
-cp <your path>/workshop/substratekitties.rs <your path>/substratekitties/runtime/src/
-```
-## 在lib.rs添加新模块
-```rust
-//添加新Module
-mod substratekitties;
-//实现trait
-impl substratekitties::Trait for Runtime{
-	type Event = Event;
-}
-//在construct_runtime!中声明我们的模块
-construct_runtime!{
-	puub enum Runtime with Log(InternalLog: DigestItem<Hash, AuthorityId, AuthoritySignature>)
-	where ...
-		...
-		...{
-		Substratekitties : substratekitties::{Module,Call,Storage,Event<T>};
-	}
-}
 ```
 
 ## 编译运行
 ```sh
-#打开工程目录
-cd substratekitties
+打开下载好的节点代码
+cd <your path>/workshop/2019-11-16/substratekitties
 #编译成Wasm文件
 #如果是第一次使用节点，要先执行./scripts/init.sh
 ./scripts/build.sh
