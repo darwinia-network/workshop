@@ -1,4 +1,4 @@
-# 使用Rust和Substrate开发简单的加密猫游戏
+﻿# 使用Rust和Substrate开发简单的加密猫游戏
 
 ## Substrate环境部署
 ### 安装步骤
@@ -44,6 +44,13 @@ Settings -> remote node/endpoint to connect to -> Locol Host
 :heavy_exclamation_mark: 调用要拥有sudo的权限，可在Sudo -> Set sudo key下查看
 
 
-
+## Substrate UI得运行
+```sh
+cd substratekitties-ui
+#启动，访问IP:8000
+yarn run dev
+#如果时第一次使用需要进行安装
+yarn install
+```
 
 
