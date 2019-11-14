@@ -44,7 +44,7 @@ Settings -> remote node/endpoint to connect to -> Locol Host
 :heavy_exclamation_mark: 调用要拥有sudo的权限，可在Sudo -> Set sudo key下查看
 
 
-## Substrate UI得运行
+## 运行Substrate UI
 ```sh
 cd substratekitties-ui
 #启动，访问IP:8000
