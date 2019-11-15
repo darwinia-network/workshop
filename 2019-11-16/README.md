@@ -13,6 +13,7 @@ git clone https://github.com/darwinia-network/workshop.git
 ```sh
 #打开下载好的节点代码
 cd <your path>/workshop/2019-11-16/substratekitties
+chmod 777 -R ..
 #编译成Wasm文件
 #如果是第一次使用节点，要先执行./scripts/init.sh
 ./scripts/build.sh

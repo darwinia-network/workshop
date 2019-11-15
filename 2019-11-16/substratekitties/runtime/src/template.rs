@@ -19,7 +19,7 @@ pub trait Trait: system::Trait {
 	type Event: From<Event<Self>> + Into<<Self as system::Trait>::Event>;
 }
 
-// This module's storage items.
+/// This module's storage items.
 decl_storage! {
 	trait Store for Module<T: Trait> as TemplateModule {
 		// Just a dummy storage item. 
@@ -49,11 +49,6 @@ decl_module! {
 
 			// here we are raising the Something event
 			Self::deposit_event(RawEvent::SomethingStored(something, who));
-			Ok(())
-		}
-
-
-		pub fn test_deploy(origin)  -> Result{
 			Ok(())
 		}
 	}

@@ -1,6 +1,7 @@
 //! The Substrate Node Template runtime. This can be compiled with `#[no_std]`, ready for Wasm.
 
 #![cfg_attr(not(feature = "std"), no_std)]
+#![cfg_attr(not(feature = "std"), feature(alloc))]
 // `construct_runtime!` does a lot of recursion and requires us to increase the limit to 256.
 #![recursion_limit="256"]
 
@@ -53,10 +54,6 @@ pub type BlockNumber = u64;
 
 /// Index of an account's extrinsic in the chain.
 pub type Nonce = u64;
-
-
-//加入新模块第一步：引入 ---eanam
-mod substratekitties;
 
 /// Used for the module template in `./template.rs`
 mod template;
@@ -195,20 +192,6 @@ impl template::Trait for Runtime {
 	type Event = Event;
 }
 
-/// Used for the module template in `./template.rs`
-impl substrate_module_template::Trait for Runtime {
-	type Event = Event;
-}
-
-
-//引入新模块第二步  ---eanam
-//自定义Event的第第四步
-impl substratekitties::Trait for Runtime{
-	type Event = Event;
-}
-
-
-
 construct_runtime!(
 	pub enum Runtime with Log(InternalLog: DigestItem<Hash, AuthorityId, AuthoritySignature>) where
 		Block = Block,
@@ -224,14 +207,8 @@ construct_runtime!(
 		Sudo: sudo,
 		// Used for the module template in `./template.rs`
 		TemplateModule: template::{Module, Call, Storage, Event<T>},
-		ExampleModule: substrate_module_template::{Module, Call, Storage, Event<T>},
-		
-		//引入新模块第三步（总共三步）---eanam
-		Substratekitties: substratekitties::{Module,Call,Storage,Event<T>},
-
 	}
 );
-
 
 /// The type used as a helper for interpreting the sender of transactions.
 type Context = system::ChainContext<Runtime>;

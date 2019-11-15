@@ -24,4 +24,3 @@ done
 
 # Restore initial directory.
 popd >/dev/null
-
