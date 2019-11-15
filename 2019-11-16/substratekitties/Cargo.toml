@@ -1,9 +1,3 @@
-[[bin]]
-name = 'substratekitties'
-path = 'src/main.rs'
-[profile.release]
-panic = 'unwind'
-
 [dependencies]
 error-chain = '0.12'
 exit-future = '0.1'
@@ -18,12 +12,12 @@ trie-root = '0.12.0'
 [dependencies.basic-authorship]
 git = 'https://github.com/paritytech/substrate.git'
 package = 'substrate-basic-authorship'
-branch = 'v1.0'
+rev = 'cc1d67e973fd02c0c997b164ba516cf041bf21f1'
 
 [dependencies.consensus]
 git = 'https://github.com/paritytech/substrate.git'
 package = 'substrate-consensus-aura'
-branch = 'v1.0'
+rev = 'cc1d67e973fd02c0c997b164ba516cf041bf21f1'
 
 [dependencies.ctrlc]
 features = ['termination']
@@ -32,12 +26,12 @@ version = '3.0'
 [dependencies.inherents]
 git = 'https://github.com/paritytech/substrate.git'
 package = 'substrate-inherents'
-branch = 'v1.0'
+rev = 'cc1d67e973fd02c0c997b164ba516cf041bf21f1'
 
 [dependencies.network]
 git = 'https://github.com/paritytech/substrate.git'
 package = 'substrate-network'
-branch = 'v1.0'
+rev = 'cc1d67e973fd02c0c997b164ba516cf041bf21f1'
 
 [dependencies.substratekitties-runtime]
 path = 'runtime'
@@ -45,32 +39,41 @@ path = 'runtime'
 [dependencies.primitives]
 git = 'https://github.com/paritytech/substrate.git'
 package = 'substrate-primitives'
-branch = 'v1.0'
+rev = 'cc1d67e973fd02c0c997b164ba516cf041bf21f1'
 
 [dependencies.sr-io]
 git = 'https://github.com/paritytech/substrate.git'
-branch = 'v1.0'
+rev = 'cc1d67e973fd02c0c997b164ba516cf041bf21f1'
 
 [dependencies.substrate-cli]
 git = 'https://github.com/paritytech/substrate.git'
-branch = 'v1.0'
+rev = 'cc1d67e973fd02c0c997b164ba516cf041bf21f1'
 
 [dependencies.substrate-client]
 git = 'https://github.com/paritytech/substrate.git'
-branch = 'v1.0'
+rev = 'cc1d67e973fd02c0c997b164ba516cf041bf21f1'
 
 [dependencies.substrate-executor]
 git = 'https://github.com/paritytech/substrate.git'
-branch = 'v1.0'
+rev = 'cc1d67e973fd02c0c997b164ba516cf041bf21f1'
 
 [dependencies.substrate-service]
 git = 'https://github.com/paritytech/substrate.git'
-branch = 'v1.0'
+rev = 'cc1d67e973fd02c0c997b164ba516cf041bf21f1'
 
 [dependencies.transaction-pool]
 git = 'https://github.com/paritytech/substrate.git'
 package = 'substrate-transaction-pool'
-branch = 'v1.0'
+rev = 'cc1d67e973fd02c0c997b164ba516cf041bf21f1'
+
+[[bin]]
+name = 'substratekitties'
+path = 'src/main.rs'
+
+[build-dependencies]
+vergen = '3'
+[profile.release]
+panic = 'unwind'
 
 [package]
 authors = ['Parity Technologies <admin@parity.io>']
@@ -78,6 +81,3 @@ build = 'build.rs'
 edition = '2018'
 name = 'substratekitties'
 version = '1.0.0'
-
-[build-dependencies]
-vergen = '3'
