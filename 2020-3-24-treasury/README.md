@@ -23,6 +23,11 @@
   + ARCH
   + RPC Calls (entry)
 
+| name    | dir     |
+|---------|---------|
+| attach  | attach/ |
+| generic | generic |
+|         |         |
 
 ### ARCH
 

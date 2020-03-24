@@ -1,23 +1,36 @@
-struct Bowie(pub i32);
-struct Ziggy(pub i32);
+struct Bowie(pub u32);
+struct Ziggy(pub u32);
 
-// default trait
+// solution-1: enum
+// enum Currency {
+//     Bowie(Bowie),
+//     Ziggy(Ziggy),
+// }
+
+// solution-2: trait
 trait Hello {
-    fn hello() -> String {
-        "hello, spaceboy!".into()
+    fn say() -> String {
+        "hello, spaceboy".into()
     }
 }
 
-impl<T> Hello for T {}
+impl Hello for Ziggy {
+    fn say() -> String {
+        "ashes to ashes".into()
+    }
+}
 
-// the method
-fn propose_spend<T>(_x: T)
+impl Hello for Bowie {}
+
+// print value from different currencies
+fn func<T>(_c: T)
 where
     T: Hello,
 {
-    println!("{:#?}", <T as Hello>::hello());
+    println!("{:#?}", <T as Hello>::say());
 }
 
 fn main() {
-    propose_spend(Bowie(0));
+    func(Bowie(0));
+    func(Ziggy(0));
 }

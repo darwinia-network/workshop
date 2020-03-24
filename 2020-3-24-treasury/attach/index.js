@@ -11,6 +11,5 @@ async function setPolkadotJs() {
     }).catch(e => console.error);
 }
 
-
 // expose to repl
 const api = setPolkadotJs();
