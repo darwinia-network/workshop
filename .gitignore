@@ -1,9 +1,18 @@
+# macos
 .DS_Store
+
+# env
 .idea
 .vscode
 *.iml
+
+# python
 __pycache__/
 
+# rust
 target/
 **/*.rs.bk
 Cargo.lock
+
+# javascript
+**/*node_modules
