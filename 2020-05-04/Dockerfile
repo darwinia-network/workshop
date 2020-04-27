@@ -17,7 +17,7 @@ MAINTAINER yanganto@gmail.com
 ##########################################
 # basic
 RUN mkdir /source
-RUN pacman -S wget tar sudo --noconfirm
+RUN pacman -Syu wget tar sudo unzip go --noconfirm
 
 # darwinia
 RUN mkdir -p /source/darwinia 
@@ -27,22 +27,28 @@ RUN tar zxvf v${version}.tar.gz -C /source/darwinia --strip-components=1; rm v${
 # Repository : https://github.com/darwinia-network/darwinia
 
 # shadow service
-RUN mkdir -p /source/shadow
-
+RUN wget https://github.com/darwinia-network/darwinia.go/archive/master.zip
+RUN unzip master.zip -d /source; rm master.zip
 
 
 ####################################
 ### Build binary from the source ###
 ####################################
-# darwinia
+# darwinia binary
 RUN wget https://raw.githubusercontent.com/yanganto/darwinia-common/trival-update-bootstrap.sh/.maintain/bootstrap.sh
 RUN bash bootstrap.sh && rm bootstrap.sh
-RUN cd /source/darwinia ;SKIP_WASM_BUILD=1 cargo build --release
+RUN cd /source/darwinia; $HOME/.cargo/bin/cargo build --release
 RUN mv /source/darwinia/target/release/darwinia /darwinia 
 # Reference:
-# Build steps: https://github.com/darwinia-network/darwinia/blob/master/README.adoc#building
+# build steps: https://github.com/darwinia-network/darwinia/blob/master/README.adoc#building
 
-# shadow service
+# shadow service binary
+RUN pacman -S make gcc --noconfirm
+RUN ls /source/darwinia.go-master
+RUN cd /source/darwinia.go-master; make
+RUN mv /source/darwinia.go-master/target/dargo /dargo
+# Reference:
+# build steps: https://github.com/darwinia-network/darwinia.go/blob/master/README.md
 
 
 #############################
@@ -50,8 +56,8 @@ RUN mv /source/darwinia/target/release/darwinia /darwinia
 #############################
 RUN pacman -S nginx --noconfirm
 RUN echo '127.0.0.1 eth-resource' >> /etc/hosts
-RUN cat /etc/nginx/nginx.conf
-RUN systemctl start nginx
+RUN wget https://raw.githubusercontent.com/yanganto/workshop/layer-one-workshop/2020-05-04/nginx.conf
+RUN mv nginx.conf /etc/nginx
 # Reference:
 # Protocol: https://github.com/darwinia-network/darwinia-common/issues/86
 # Setup: https://github.com/darwinia-network/darwinia.js/blob/master/README.md
@@ -63,9 +69,9 @@ RUN systemctl start nginx
 RUN pacman -Scc --noconfirm
 RUN ${clean} && rm -rf /source
 
-#########################
-### Deployment Script ###
-#########################
+###################
+### Run Service ###
+###################
 RUN wget https://raw.githubusercontent.com/yanganto/workshop/layer-one-workshop/2020-05-04/run.sh
 
 WORKDIR /
