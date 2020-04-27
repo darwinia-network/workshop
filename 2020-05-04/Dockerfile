@@ -63,17 +63,20 @@ RUN mv nginx.conf /etc/nginx
 # Setup: https://github.com/darwinia-network/darwinia.js/blob/master/README.md
 
 
+###############################
+### Services Runner Setting ###
+###############################
+RUN pacman -S supervisor --noconfirm
+RUN wget https://raw.githubusercontent.com/yanganto/workshop/layer-one-workshop/2020-05-04/supervisor.conf
+
+
 ################
 ### Clean Up ###
 ################
 RUN pacman -Scc --noconfirm
 RUN ${clean} && rm -rf /source
 
-###################
-### Run Service ###
-###################
-RUN wget https://raw.githubusercontent.com/yanganto/workshop/layer-one-workshop/2020-05-04/run.sh
 
 WORKDIR /
-ENTRYPOINT ["bash", "run.sh"]
-CMD []
+ENTRYPOINT []
+CMD ["supervisord", "-c", "/supercisor.conf"]
