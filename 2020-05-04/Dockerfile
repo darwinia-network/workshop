@@ -54,8 +54,17 @@ RUN mv /source/darwinia.go-master/target/dargo /dargo
 #############################
 ### Set up shadow service ###
 #############################
-RUN pacman -S nginx --noconfirm
-RUN echo '127.0.0.1 eth-resource' >> /etc/hosts
+RUN pacman -S nginx sed --noconfirm
+
+# Because this is docker image, adding eth-resource is a hacky thing.
+# It is simple in linux with this command
+# `echo '127.0.0.1 eth-resource' >> /etc/hosts`
+RUN cp /etc/hosts /tmp/hosts 
+RUN echo '127.0.0.1 eth-resource' >> /tmp/hosts
+RUN mkdir -p -- /lib-override && cp /usr/lib/libnss_files.so.2 /lib-override
+RUN sed -i 's:/etc/hosts:/tmp/hosts:g' /lib-override/libnss_files.so.2
+ENV LD_LIBRARY_PATH /lib-override
+
 RUN wget https://raw.githubusercontent.com/yanganto/workshop/layer-one-workshop/2020-05-04/nginx.conf
 RUN mv nginx.conf /etc/nginx
 # Reference:
@@ -79,4 +88,4 @@ RUN ${clean} && rm -rf /source
 
 WORKDIR /
 ENTRYPOINT []
-CMD ["supervisord", "-c", "/supercisor.conf"]
+CMD ["supervisord", "-c", "/supervisor.conf"]
