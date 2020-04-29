@@ -26,22 +26,37 @@ This the notes for workshop, please refer the [slides](https://slides.com/yangan
   - Do request to a shadow service
   - Relay and verify
 
+## Setup a key for local shadow service
+`export INFURA_KEY=https://mainnet.infura.io/v3/XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX`
+
 ## Insert your SR255519 keys for the offchain worker
  - Here is the action to provide the identity to the relayer
  - such that the relayer will start relay as the identity
-```
-curl http://localhost:9933 -H "Content-Type:application/json;charset=utf-8" -d \
-'{
-  "jsonrpc":"2.0",
-  "id":1,
-  "method":"author_insertKey",
-  "params": [
-    "rlwk",
-    "tomorrow ritual harsh grab admit jewel slice raw subject open rather uncover",
-    "0x70bf51d123581d6e51af70b342cac75ae0a0fc71d1a8d388719139af9c042b18"
-  ]
-}' 
-```
+  ```
+  curl http://localhost:9933 -H "Content-Type:application/json;charset=utf-8" -d \
+  '{
+    "jsonrpc":"2.0",
+    "id":1,
+    "method":"author_insertKey",
+    "params": [
+      "rlwk",
+      "tomorrow ritual harsh grab admit jewel slice raw subject open rather uncover",
+      "0x70bf51d123581d6e51af70b342cac75ae0a0fc71d1a8d388719139af9c042b18"
+    ]
+  }' 
+  ```
+
+## Use Darwinia Public Shadow Service
+ - test service connection
+  ```
+  curl http://107.167.191.203:4001 -H "Content-Type:application/json;charset=utf-8" -d \
+  '{
+    id: 1,
+    jsonrpc: "2.0",
+    method: "shadow_getEthHeaderWithProofByNumber",
+    params: {"block_num": 9966784, "transaction": false}
+  }' 
+  ```
 
 ## Refernce
 - [The relayer incentive model](https://github.com/darwinia-network/darwinia-common/pull/108)
