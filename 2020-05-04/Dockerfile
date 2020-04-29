@@ -4,7 +4,7 @@
 FROM archlinux/base
 
 # setup the target version
-ARG version=0.5.3
+ARG version=0.5.4
 
 # clean up the source code
 ARG clean=true
@@ -35,7 +35,7 @@ RUN unzip master.zip -d /source; rm master.zip
 ### Build binary from the source ###
 ####################################
 # darwinia binary
-RUN wget https://raw.githubusercontent.com/yanganto/darwinia-common/trival-update-bootstrap.sh/.maintain/bootstrap.sh
+RUN wget https://raw.githubusercontent.com/darwinia-network/darwinia-common/master/.maintain/bootstrap.sh
 RUN bash bootstrap.sh && rm bootstrap.sh
 RUN cd /source/darwinia; $HOME/.cargo/bin/cargo build --release
 RUN mv /source/darwinia/target/release/darwinia /darwinia 
