@@ -17,7 +17,7 @@ MAINTAINER yanganto@gmail.com
 ##########################################
 # basic
 RUN mkdir /source
-RUN pacman -Syu wget tar sudo unzip go --noconfirm
+RUN pacman -Syu wget tar sudo unzip go vim --noconfirm
 
 # darwinia
 RUN mkdir -p /source/darwinia 
@@ -58,9 +58,12 @@ RUN pacman -S nginx sed --noconfirm
 
 # Because this is docker image, adding eth-resource is a hacky thing.
 # It is simple in linux with this command
-# `echo '127.0.0.1 eth-resource' >> /etc/hosts`
+# `echo '127.0.0.1 shadow.darwinia.network' >> /etc/hosts`
+# We are using shadow.darwinia.network as default, please reference this PR
+# https://github.com/darwinia-network/darwinia-common/pull/120
+
 RUN cp /etc/hosts /tmp/hosts 
-RUN echo '127.0.0.1 eth-resource' >> /tmp/hosts
+RUN echo '107.167.191.203 eth-resource' >> /tmp/hosts
 RUN mkdir -p -- /lib-override && cp /usr/lib/libnss_files.so.2 /lib-override
 RUN sed -i 's:/etc/hosts:/tmp/hosts:g' /lib-override/libnss_files.so.2
 ENV LD_LIBRARY_PATH /lib-override

@@ -17,7 +17,7 @@ This the notes for workshop, please refer the [slides](https://slides.com/yangan
 - get the container id then attach into
   - `docker container list`
   - `docker exec -it <container_id> bash`
-  - The `-leoc=trace` will open the trace level logging for offchain worker
+  - The `-leth-offchain=trace` will open the trace level logging for offchain worker
   - logs are saved in /var/log/supervisor
   - Comparing logs with [source code](https://github.com/darwinia-network/darwinia-common/blob/master/frame/bridge/eth/offchain/src/lib.rs) 
 
@@ -39,7 +39,7 @@ This the notes for workshop, please refer the [slides](https://slides.com/yangan
     "id":1,
     "method":"author_insertKey",
     "params": [
-      "rlwk",
+      "babe",
       "tomorrow ritual harsh grab admit jewel slice raw subject open rather uncover",
       "0x70bf51d123581d6e51af70b342cac75ae0a0fc71d1a8d388719139af9c042b18"
     ]
@@ -48,15 +48,17 @@ This the notes for workshop, please refer the [slides](https://slides.com/yangan
 
 ## Use Darwinia Public Shadow Service
  - test service connection
+   ```curl -d '{"method":"shadow_getEthHeaderByNumber","params":{"block_num":  9966666}, "id": 0}' http://eth-resource```
+
+## Run with Crab Network
+- change the setting in `supervisor.conf`
   ```
-  curl http://107.167.191.203:4001 -H "Content-Type:application/json;charset=utf-8" -d \
-  '{
-    id: 1,
-    jsonrpc: "2.0",
-    method: "shadow_getEthHeaderWithProofByNumber",
-    params: {"block_num": 9966784, "transaction": false}
-  }' 
+  command=/darwinia --dev -leth-offchain=trace  --base-path /tmp/darwinia-develop/alice
+  ; command=/darwinia -leth-offchain=trace  --base-path /tmp/darwinia-develop/alice
   ```
+- restart service
+  ```supervisorctl update all```
+
 
 ## Refernce
 - [The relayer incentive model](https://github.com/darwinia-network/darwinia-common/pull/108)
