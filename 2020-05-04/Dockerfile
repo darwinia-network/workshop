@@ -9,6 +9,12 @@ ARG version=0.5.4
 # clean up the source code
 ARG clean=true
 
+# ip location of shadow.darwinia.network
+ARG shadowip=35.234.9.96
+
+# put your infura key here
+ARG infurakey=YourInfuraKey
+
 MAINTAINER yanganto@gmail.com
 
 
@@ -47,6 +53,8 @@ RUN pacman -S make gcc --noconfirm
 RUN ls /source/darwinia.go-master
 RUN cd /source/darwinia.go-master; make
 RUN mv /source/darwinia.go-master/target/dargo /dargo
+RUN mkdir /root/.darwinia
+RUN echo '{"eth": { "api": "${infurakey}"}}' > ~/.darwinia/config.json
 # Reference:
 # build steps: https://github.com/darwinia-network/darwinia.go/blob/master/README.md
 
@@ -64,7 +72,7 @@ RUN systemctl disable nginx
 # https://github.com/darwinia-network/darwinia-common/pull/120
 
 RUN cp /etc/hosts /tmp/hosts 
-RUN echo '107.167.191.203 eth-resource' >> /tmp/hosts
+RUN echo '${shadowip} eth-resource' >> /tmp/hosts
 RUN mkdir -p -- /lib-override && cp /usr/lib/libnss_files.so.2 /lib-override
 RUN sed -i 's:/etc/hosts:/tmp/hosts:g' /lib-override/libnss_files.so.2
 ENV LD_LIBRARY_PATH /lib-override
