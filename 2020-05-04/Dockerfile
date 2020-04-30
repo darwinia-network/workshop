@@ -55,6 +55,7 @@ RUN mv /source/darwinia.go-master/target/dargo /dargo
 ### Set up shadow service ###
 #############################
 RUN pacman -S nginx sed --noconfirm
+RUN systemctl disable nginx
 
 # Because this is docker image, adding eth-resource is a hacky thing.
 # It is simple in linux with this command
@@ -74,13 +75,21 @@ RUN mv nginx.conf /etc/nginx
 # Protocol: https://github.com/darwinia-network/darwinia-common/issues/86
 # Setup: https://github.com/darwinia-network/darwinia.js/blob/master/README.md
 
-
 ###############################
 ### Services Runner Setting ###
 ###############################
 RUN pacman -S supervisor --noconfirm
+RUN wget https://raw.githubusercontent.com/yanganto/workshop/layer-one-workshop/2020-05-04/insert_offchain_key.sh 
+RUN chmod +x insert_offchain_key.sh
+RUN wget https://raw.githubusercontent.com/yanganto/workshop/layer-one-workshop/2020-05-04/insert_validator_key.sh 
+RUN chmod +x insert_validator_key.sh
+RUN wget https://raw.githubusercontent.com/yanganto/workshop/layer-one-workshop/2020-05-04/url2cloud.sh
+RUN chmod +x url2cloud.sh 
+RUN wget https://raw.githubusercontent.com/yanganto/workshop/layer-one-workshop/2020-05-04/url2local.sh 
+RUN chmod +x url2local.sh 
+RUN wget https://raw.githubusercontent.com/yanganto/workshop/layer-one-workshop/2020-05-04/run_nginx.sh
+RUN chmod +x run_nginx.sh
 RUN wget https://raw.githubusercontent.com/yanganto/workshop/layer-one-workshop/2020-05-04/supervisor.conf
-
 
 ################
 ### Clean Up ###
@@ -90,5 +99,5 @@ RUN ${clean} && rm -rf /source
 
 
 WORKDIR /
-ENTRYPOINT []
-CMD ["supervisord", "-c", "/supervisor.conf"]
+ENTRYPOINT ["supervisord", "-c", "/supervisor.conf"]
+CMD []
